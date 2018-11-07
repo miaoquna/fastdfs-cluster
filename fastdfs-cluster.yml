@@ -1,0 +1,28 @@
+version: "3"
+# 服务集合
+services:
+  # 跟踪服务器(Tracker Server)
+  fastdfs_tracker:
+    # 创建PHP容器，由于php容器比较复杂，这里选择使用 Dockerfile 文件创建容器
+    build: service/Tracker/
+    # 容器名称
+    container_name: Fastdfs.Tracker
+    # 对外暴露的访问端口
+    expose:
+    - "22122"
+    - "8080"
+    # 目录映射
+    volumes:
+    # 挂载文件目录 本地目录:容器目录:权限（ro-只读，rw-可读可写）
+    # Tracker 配置文件
+    - ./conf/tracker.conf:/etc/fdfs/tracker.conf:rw
+    environment:
+    # 同步时区
+    - TZ=Asia/Shanghai
+    # 网路名称
+    networks:
+    - fastdfs
+    # 开机启动
+    restart: always
+networks:
+  fastdfs:
