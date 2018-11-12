@@ -1,5 +1,5 @@
 # 使用最新版 centos
-FROM alpine:latest
+FROM centos:latest
 
 # 定义作者
 LABEL MAINTAINER "2418952171@qq.com"
@@ -11,19 +11,16 @@ ENV FASTDFS_PATH=/opt/fdfs \
     GROUP_NAME= \
     TRACKER_SERVER=
 
-RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories
 
-RUN apk update
 
 # 安装需要的依赖
-RUN apk add --no-cache git gcc make perl libc-dev
+RUN yum install -y git gcc make
 
 #create the dirs to store the files downloaded from internet
 # 初始化所需要的文件夹
 RUN mkdir -p ${FASTDFS_PATH}/libfastcommon \
  && mkdir -p ${FASTDFS_PATH}/fastdfs \
  && mkdir ${FASTDFS_BASE_PATH}
-
 
 
 ################################# libfastcommon ######################################
@@ -57,15 +54,6 @@ RUN git clone --branch V5.11 --depth 1 https://github.com/happyfish100/fastdfs.g
  && ./make.sh install \
  && rm -rf ${FASTDFS_PATH}/fastdfs
 
-RUN ln -s /usr/bin/fdfs_trackerd /usr/local/bin  \
- && ln -s /usr/bin/stop.sh /usr/local/bin \
- && ln -s /usr/bin/restart.sh /usr/local/bin
-
-COPY ./conf/tracker.conf /etc/fdfs/
-
-#CMD ["fdfs_trackerd /etc/fdfs/tracker.conf start"]
-# 测试命令防止程序退出
-#CMD while true;do echo hello docker;sleep 1;done
 
 # 默认安装成功后就会在 /etc/fdfs 目录生成如上的3个.sample文件(示例配置文件)
 # 这里我们选择使用配置文件中的文件进行替换

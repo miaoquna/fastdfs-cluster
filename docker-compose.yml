@@ -2,9 +2,11 @@ version: "3"
 # 服务集合
 services:
   # 跟踪服务器(Tracker Server)
-  fastdfs_tracker:
+  tracker:
     # 创建PHP容器，由于php容器比较复杂，这里选择使用 Dockerfile 文件创建容器
-    build: service/Tracker/
+    build:
+      context: ./
+      dockerfile: ./service/Tracker/Dockerfile
     # 容器名称
     container_name: Fastdfs.Tracker
     # 对外暴露的访问端口
@@ -24,5 +26,6 @@ services:
     - fastdfs
     # 开机启动
     restart: always
+    command: fdfs_trackerd /etc/fdfs/tracker.conf start
 networks:
   fastdfs:
