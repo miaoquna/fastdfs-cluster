@@ -14,18 +14,19 @@ services:
     - "22122"
     - "8080"
     # 目录映射
-    volumes:
+    #volumes:
     # 挂载文件目录 本地目录:容器目录:权限（ro-只读，rw-可读可写）
     # Tracker 配置文件
-    - ./conf/tracker.conf:/etc/fdfs/tracker.conf:rw
+      #- ./conf/tracker.conf:/etc/fdfs/tracker.conf:rw
     environment:
     # 同步时区
     - TZ=Asia/Shanghai
+    - PORT=22122
     # 网路名称
     networks:
     - fastdfs
     # 开机启动
     restart: always
-    command: fdfs_trackerd /etc/fdfs/tracker.conf start
+    #command: tracker
 networks:
   fastdfs:

@@ -16,7 +16,7 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositorie
 RUN apk update
 
 # 安装需要的依赖
-RUN apk add --no-cache git gcc make perl libc-dev
+RUN apk add --no-cache git gcc make perl libc-dev coreutils
 
 #create the dirs to store the files downloaded from internet
 # 初始化所需要的文件夹
@@ -62,6 +62,17 @@ RUN ln -s /usr/bin/fdfs_trackerd /usr/local/bin  \
  && ln -s /usr/bin/restart.sh /usr/local/bin
 
 COPY ./conf/tracker.conf /etc/fdfs/
+
+
+COPY ./service/start.sh /usr/bin/
+
+#设置可执行权限
+RUN chmod 777 /usr/bin/start.sh
+
+ENTRYPOINT ["/usr/bin/start.sh"]
+
+CMD ["tracker"]
+
 
 #CMD ["fdfs_trackerd /etc/fdfs/tracker.conf start"]
 # 测试命令防止程序退出
