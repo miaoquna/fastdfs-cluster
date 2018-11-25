@@ -25,13 +25,14 @@ fi
 if [ -n "$TRACKER_SERVER" ] ; then  
 
 sed -i "s|tracker_server=.*$|tracker_server=${TRACKER_SERVER}|g" /etc/fdfs/storage.conf
-sed -i "s|tracker_server=.*$|tracker_server=${TRACKER_SERVER}|g" /etc/fdfs/client.conf
+#sed -i "s|tracker_server=.*$|tracker_server=${TRACKER_SERVER}|g" /etc/fdfs/client.conf
 
 fi
 
 if [ -n "$GROUP_NAME" ] ; then  
 
 sed -i "s|group_name=.*$|group_name=${GROUP_NAME}|g" /etc/fdfs/storage.conf
+sed -i "s|group1$|${GROUP_NAME}|g" /usr/local/nginx/conf/nginx.conf
 
 fi 
 
@@ -63,13 +64,18 @@ done
 if [ $TIMES -gt 0 ]; then
      echo "the ${FASTDFS_MODE} node started successfully at $(date +%Y-%m-%d_%H:%M)"
 	
-    # 打印日志文件详细地址方便查询
+     # 打印日志文件详细地址方便查询
      echo "please have a look at the log detail at $FASTDFS_LOG_FILE"
-	
+
+	 # 创建访问软链接
+	 #ln -s /var/fdfs/data/ /var/fdfs/data/M00
+     if [ $FASTDFS_MODE = "storage" ]; then
+	    /usr/local/nginx/sbin/nginx -c /usr/local/nginx/conf/nginx.conf
+ 	 fi
  	 # 保证容器后台运行
-     tail -F --pid=`cat $PID_NUMBER` /dev/null
-     #
-     #tail -f "$FASTDFS_LOG_FILE"
+     #tail -F --pid=`cat $PID_NUMBER` /dev/null
+     # tail -f "$FASTDFS_LOG_FILE"
+     tail -f --pid=`cat $PID_NUMBER` /dev/null
 # 启动失败
 else
     echo "the ${FASTDFS_MODE} node started failed at $(date +%Y-%m-%d_%H:%M)"

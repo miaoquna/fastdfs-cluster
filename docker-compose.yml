@@ -14,19 +14,57 @@ services:
     - "22122"
     - "8080"
     # 目录映射
-    #volumes:
+    volumes:
     # 挂载文件目录 本地目录:容器目录:权限（ro-只读，rw-可读可写）
     # Tracker 配置文件
-      #- ./conf/tracker.conf:/etc/fdfs/tracker.conf:rw
+    - ./logs/tracker/:/var/fdfs:rw
     environment:
     # 同步时区
     - TZ=Asia/Shanghai
     - PORT=22122
     # 网路名称
     networks:
-    - fastdfs
+      - fastdfs
     # 开机启动
     restart: always
-    #command: tracker
+    command: tracker
+  # 存储服务器(Storage Server)
+  storage:
+    # 创建PHP容器，由于php容器比较复杂，这里选择使用 Dockerfile 文件创建容器
+    build:
+      context: ./
+      dockerfile: service/Storage/Dockerfile
+    # 容器名称
+    container_name: Fastdfs.Storage
+    # 对外暴露的访问端口
+    expose:
+    - "23000"
+    - "80"
+    ports:
+    - "10000:80"
+    - "23000:23000"
+    environment:
+    # 同步时区
+    - TZ=Asia/Shanghai
+    - PORT=23000
+    # 集群服务器地址
+    - TRACKER_SERVER=Fastdfs.Tracker:22122
+    # 分组名称
+    - GROUP_NAME=group1
+    # 目录映射
+    volumes:
+    # 挂载文件目录 本地目录:容器目录:权限（ro-只读，rw-可读可写）
+    # Tracker 配置文件
+    - ./logs/storage1/:/var/fdfs:rw
+    # 网路名称
+    networks:
+    - fastdfs
+    # 开机启动
+    links:
+    - tracker
+    restart: always
+    depends_on:
+    - tracker
+    command: storage
 networks:
   fastdfs:

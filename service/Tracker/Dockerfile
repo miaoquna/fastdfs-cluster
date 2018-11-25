@@ -1,8 +1,10 @@
 # 使用最新版 centos
 FROM alpine:latest
 
+LABEL version="v5.11"
+
 # 定义作者
-LABEL MAINTAINER "2418952171@qq.com"
+MAINTAINER "2418952171@qq.com"
 
 # 初始化环境变量
 ENV FASTDFS_PATH=/opt/fdfs \
@@ -61,23 +63,19 @@ RUN ln -s /usr/bin/fdfs_trackerd /usr/local/bin  \
  && ln -s /usr/bin/stop.sh /usr/local/bin \
  && ln -s /usr/bin/restart.sh /usr/local/bin
 
+# 卸载不需要的软件减小镜像大小
+RUN apk del git
+
+# 写入配置文件到容器
 COPY ./conf/tracker.conf /etc/fdfs/
 
-
+# 写入启动脚本到容器
 COPY ./service/start.sh /usr/bin/
 
-#设置可执行权限
+#设置启动脚本可执行权限
 RUN chmod 777 /usr/bin/start.sh
 
 ENTRYPOINT ["/usr/bin/start.sh"]
 
+# 启动服务
 CMD ["tracker"]
-
-
-#CMD ["fdfs_trackerd /etc/fdfs/tracker.conf start"]
-# 测试命令防止程序退出
-#CMD while true;do echo hello docker;sleep 1;done
-
-# 默认安装成功后就会在 /etc/fdfs 目录生成如上的3个.sample文件(示例配置文件)
-# 这里我们选择使用配置文件中的文件进行替换
-# COPY ../conf/tracker.conf /etc/fdfs/
