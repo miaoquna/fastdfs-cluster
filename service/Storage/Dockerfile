@@ -18,7 +18,7 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositorie
 RUN apk update
 
 # 安装需要的依赖
-RUN apk add --no-cache git gcc make perl libc-dev coreutils curl unzip pcre pcre-dev zlib zlib-dev openssl openssl-dev
+RUN apk add --no-cache git gcc make perl libc-dev curl unzip pcre pcre-dev zlib zlib-dev openssl openssl-dev coreutils unzip
 
 #create the dirs to store the files downloaded from internet
 # 初始化所需要的文件夹
@@ -63,6 +63,7 @@ RUN ln -s /usr/bin/fdfs_trackerd /usr/local/bin  \
  && ln -s /usr/bin/restart.sh /usr/local/bin
 
 # 写入配置文件到容器
+COPY ./conf/client.conf /etc/fdfs/
 COPY ./conf/storage.conf /etc/fdfs/
 COPY ./conf/http.conf /etc/fdfs/
 COPY ./conf/mime.types /etc/fdfs/
@@ -93,11 +94,11 @@ RUN tar -zxvf nginx-1.8.1.tar.gz \
  && ls \
  && cp -r fastdfs-nginx-module-master /usr/local \
  && cp -r /usr/local/fastdfs-nginx-module-master/src/mod_fastdfs.conf /etc/fdfs/ \
- && sed -i "s/base_path=\/tmp/base_path=\/var\/fdfs/g" /usr/local/fastdfs-nginx-module-master/src/mod_fastdfs.conf \
- && sed -i "s/tracker_server=tracker:22122/tracker_server=Fastdfs.Tracker:22122/g" /usr/local/fastdfs-nginx-module-master/src/mod_fastdfs.conf \
- && sed -i "s/storage_server_port=23000/storage_server_port={$PORT}/g" /usr/local/fastdfs-nginx-module-master/src/mod_fastdfs.conf \
- && sed -i "s/url_have_group_name = false/url_have_group_name = true/g" /usr/local/fastdfs-nginx-module-master/src/mod_fastdfs.conf \
- && sed -i "s/store_path0=\/home\/yuqing\/fastdfs/store_path0=\/var\/fdfs/g" /usr/local/fastdfs-nginx-module-master/src/mod_fastdfs.conf \
+ && sed -i "s/base_path=\/tmp/base_path=\/var\/fdfs/g" /etc/fdfs/mod_fastdfs.conf \
+ && sed -i "s/tracker_server=tracker:22122/tracker_server=Fastdfs.Tracker:22122/g" /etc/fdfs/mod_fastdfs.conf \
+ && sed -i "s/storage_server_port=23000/storage_server_port={$PORT}/g" /etc/fdfs/mod_fastdfs.conf \
+ && sed -i "s/url_have_group_name = false/url_have_group_name = true/g" /etc/fdfs/mod_fastdfs.conf \
+ && sed -i "s/store_path0=\/home\/yuqing\/fastdfs/store_path0=\/var\/fdfs/g" /etc/fdfs/mod_fastdfs.conf \
  && cd nginx-1.8.1 \
  && sed -i "s/ngx_module_incs=\"\/usr\/local\/include\"/ngx_module_incs=\"\/usr\/include\/fastdfs \/usr\/include\/fastcommon\/\"/g" /usr/local/fastdfs-nginx-module-master/src/config \
  && sed -i "s/\$CORE_INCS \/usr\/local\/include/\$CORE_INCS \/usr\/include\/fastdfs \/usr\/include\/fastcommon\//g" /usr/local/fastdfs-nginx-module-master/src/config \

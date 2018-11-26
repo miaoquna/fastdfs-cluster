@@ -25,7 +25,7 @@ fi
 if [ -n "$TRACKER_SERVER" ] ; then  
 
 sed -i "s|tracker_server=.*$|tracker_server=${TRACKER_SERVER}|g" /etc/fdfs/storage.conf
-#sed -i "s|tracker_server=.*$|tracker_server=${TRACKER_SERVER}|g" /etc/fdfs/client.conf
+sed -i "s|tracker_server=.*$|tracker_server=${TRACKER_SERVER}|g" /etc/fdfs/client.conf
 
 fi
 
@@ -63,7 +63,7 @@ done
 # 如果 fastdfs 启动成功打印启动时间
 if [ $TIMES -gt 0 ]; then
      echo "the ${FASTDFS_MODE} node started successfully at $(date +%Y-%m-%d_%H:%M)"
-	
+
      # 打印日志文件详细地址方便查询
      echo "please have a look at the log detail at $FASTDFS_LOG_FILE"
 
