@@ -68,6 +68,7 @@ RUN apk del git
 
 # 写入配置文件到容器
 COPY ./conf/tracker.conf /etc/fdfs/
+COPY ./conf/http.conf /etc/fdfs/
 
 # 写入启动脚本到容器
 COPY ./service/start.sh /usr/bin/

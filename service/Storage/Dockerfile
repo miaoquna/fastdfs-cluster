@@ -110,6 +110,7 @@ RUN tar -zxvf nginx-1.8.1.tar.gz \
 
 # 创建配置文件
 COPY ./conf/nginx.conf /usr/local/nginx/conf/
+COPY ./conf/crossdomain.xml /usr/local/nginx/html/crossdomain.xml
 ###################################### Nginx 访问模块安装完毕 ########################################
 
 

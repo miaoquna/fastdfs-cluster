@@ -24,7 +24,7 @@ services:
     - PORT=22122
     # 网路名称
     networks:
-      - fastdfs
+      - test_net1
     # 开机启动
     restart: always
     command: tracker
@@ -61,7 +61,7 @@ services:
     - /home/jiang/图片/:/data/images/:rw
     # 网路名称
     networks:
-    - fastdfs
+    - test_net1
     # 开机启动
     links:
     - tracker
@@ -70,4 +70,6 @@ services:
     - tracker
     command: storage
 networks:
-  fastdfs:
+  test_net1:
+    external:
+        name: dnmp_network
